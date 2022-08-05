@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,14 +9,11 @@
 <body>
     <nav>
         <a href="/blog/">Blog</a>
-        <a href="/about_me/">About me</a>        
+        <a href="/about_me/">About me</a>
     </nav>
 
-{% for p in post_list %}
-    <hr/>
-    <h2><a href="{{ p.get_absolute_url }}">{{ p.title }}</a></h2>
-    <h4>{{ p.created_at }}</h4>
-    <p>{{ p.content }}</p>
-{% endfor %}
+    <h1>안녕하세요. 달타냥입니다.</h1>
+    <h2>대문페이지</h2>
+    <h3>아직 만들지 않음</h3>
 </body>
 </html>
