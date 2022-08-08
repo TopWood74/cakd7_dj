@@ -1,21 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{post.title }} - Blog</title>
-</head>
-<body>
-    <nav>
-        <a href="/blog/">Blog</a>
-        <a href="/about_me/">About me</a>        
-    </nav>
-    
-    <h1>{{ post.title }}</h1>
-    <h4>{{ post.created_at }}</h4>
+{% extends 'blog/base.html' %}
+{% block head_title %} {{ post.title }} - Blog {% endblock %}
+{% block main_area %}
+    <h1 class="mt-4">{{ post.title }}</h1>
+    {% if p.hook_text %}
+        <h5 class="text-muted">{{ post.hook_text }}</h5>
+    {% endif %}
+    <p class="lead">
+        by
+        <a href="#">작성자명 쓸 위치(개발예정)</a>
+    </p>
+    <hr>
+    <p>{{ post.created_at }}</p>
+    <hr>
+    {% if p.head_image %}            
+        <img class="card-img-top" src="{{ p.head_image.url }}" alt="{{ P }} head image">
+    {% else %}
+        <img class="card-img-top" src="https://picsum.photos/seed/{{ p.id }}/800/200" alt="rendom_image">
+    {% endif %}
+    <hr>
     <p>{{ post.content }}</p>
-    <hr />
+    {% if post.file_upload %}
+        <a href="{{ post.file_upload.url }}" class="btn btn-outline-dark" role="button">
+            Download:
+
+            {% if post.get_file_ext == 'csv' %}
+                <i class="fas fa-file-csv"></i>
+            {% elif post.get_file_ext == 'xlsx' or post.get_file_ext == 'xls' %}
+                <i class="fas fa-file-excel"></i>
+                {% elif post.get_file_ext == 'docx' or post.get_file_ext == 'doc' %}
+                <i class="fas fa-file-word"></i>                
+            {% else %}
+                <i class="far fa-file"></i>                
+            {% endif %}
+            {{ post.get_file_name }}
+        </a>
+    {% endif %}
+    <hr>
     <h3>여기 댓글이 들어올 수 있겠죠?</h3>
-</body>
-</html>
+{% endblock %}
+ 
