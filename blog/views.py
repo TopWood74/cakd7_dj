@@ -1,6 +1,7 @@
 from multiprocessing import context
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Post, Category, Tag
 
 class PostList(ListView):
@@ -22,28 +23,45 @@ class PostDetail(DetailView):
         context['no_category_post_count'] = Post.objects.filter(category=None).count()
         return context
 
+class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = Post
+    fields = ['title','hook_text','content','head_image','file_upload','category']
+
+    def test_func(self):
+        return self.request.user.is_superuser or self.request.user.is_staff
+
+    def form_valid(self, form):
+        current_user = self.request.user
+        if current_user.is_authenticated and (current_user.is_staff or current_user.is_superuser):
+            form.instance.author = current_user
+            return super(PostCreate, self).form_valid(form)
+        else:
+            return redirect('/blog')
+
 def category_page(request, slug):
     if slug == 'no_category':
         category = '미분류'
-        post_list = Post.objects.filter(category=None)
+        post_list = Post.objects.filter(category=None).order_by('-pk')
     else:
         category = Category.objects.get(slug=slug)
-        post_list = Post.objects.filter(category=category)
+        post_list = Post.objects.filter(category=category).order_by('-pk')
+
+    context = {
+        'post_list': post_list,
+        'categories': Category.objects.all(),
+        'no_category_post_count': Post.objects.filter(category=None).count(),
+        'category': category,
+    }
 
     return render(
         request,
         'blog/post_list.html',
-        {
-            'post_list': post_list,
-            'categories': Category.objects.all(),
-            'no_category_post_count': Post.objects.filter(category=None).count(),
-            'category': category,
-        }
+        context
     )
 
 def tag_page(request, slug):
     tag = Tag.objects.get(slug=slug)
-    post_list = tag.post_set.all()
+    post_list = tag.post_set.order_by('-pk').all()
 
     return render(
         request,
