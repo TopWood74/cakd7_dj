@@ -28,7 +28,7 @@
         <img class="card-img-top" src="https://picsum.photos/seed/{{ post.id }}/800/200" alt="rendom_image">
     {% endif %}
     <hr>
-    <p>{{ post.content | linebreaksbr }}</p>
+    <p>{{ post.get_content_markdown | safe }}</p>
     {% if post.tags.exists %}
         <i class="fas fa-tags"></i>
         {% for tag in post.tags.iterator %}
