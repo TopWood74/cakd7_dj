@@ -100,6 +100,16 @@ class PostUpdate(LoginRequiredMixin, UpdateView):
 
         return response
 
+class CommentUpdate(LoginRequiredMixin, UpdateView):
+    model = Comment
+    form_class = CommentForm
+
+    def disatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated and request.user == self.get_object().author:
+            return super(CommentUpdate, self).dispatch(request, *args, **kwargs)
+        else:
+            raise PermissionDenied
+
 def category_page(request, slug):
     if slug == 'no_category':
         category = '미분류'
