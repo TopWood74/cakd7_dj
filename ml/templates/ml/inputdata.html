@@ -7,10 +7,18 @@
             <div class="col-12 mb-5 d-none" id="div-result">
                 <h4>예측 결과</h4>
                 <br/>
-                <ul>
-                    <li>입력 내용: <span id="result-lis"></span></li>
-                    <li>생존 여부: <span id="result-ans"></span></li>   
-                </ul>     
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <ul>
+                            <li>입력 내용: <span id="result-lis"></span></li>
+                            <li>생존 여부: <span id="result-ans"></span></li>   
+                        </ul>
+                    </div>
+                    <div class="col-sm-6">
+                        <img src="/static/ml/images/img_Survived.jpg" id="div-image" class="w-100">
+                    </div>
+                </div>
             </div>
 
             <div class="col-12">
@@ -83,7 +91,9 @@ function submitResult() {
             data = JSON.parse(data);
             $("#result-ans").html(data.ans);
             $("#result-lis").html(data.lis);
-            $("#div-result").removeClass('d-none');            
+            $("#div-result").removeClass('d-none');           
+            
+            $("#div-image").attr("src", "/static/ml/images/img_"+data.ans+".jpg");
         }
     });
     return false;
