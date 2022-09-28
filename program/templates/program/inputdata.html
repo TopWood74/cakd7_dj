@@ -17,7 +17,8 @@
             <div class="col-12">
                 <h4>입력한 수 계산</h4>
                 <br/>
-                <form action="./result/" method="post" onsubmit="return submitResult();">{% csrf_token %}
+                <form action="./result/" method="post" onsubmit="return submitResult();">
+                    <!-- {% csrf_token %} -->
                     <div class="form-group">
                         <label for="form-input-mode">연산 방법:</label>
                         <select name="mode" class="form-control" id="form-input-mode" required>
@@ -39,20 +40,23 @@
 
 <script type="text/javascript">
 function submitResult() {
-    $.ajax({
-        url:'./result/',
-        type:'post',
-        data:$('form').serialize(),
-        success:function(data){
-            data = JSON.parse(data);
-            $("#result-ans").html(data.ans);
-            $("#result-lis").html(data.lis);
-            $("#result-mode").html(data.mode_kr + " (" + data.mode + ")");
-            $("#div-result").removeClass('d-none');            
-        }
-    });
+    let ajax = {}
+    ajax.type = 'post';
+    ajax.url = "./result/";
+    ajax.data = JSON.stringify($('form').serializeObject());
+    ajax.dataType = 'json';
+    ajax.csrf = '{{ csrf_token }}';
+    ajax.success = function(data) { ajaxSuccess(data); };
+    ajaxReady(ajax); /* jQuery.ajax */
     return false;
 }
-</script>
 
+function ajaxSuccess(data) {
+    //data = JSON.parse(data);
+    $("#result-ans").html(data.ans);
+    $("#result-lis").html(data.lis);
+    $("#result-mode").html(data.mode_kr + " (" + data.mode + ")");
+    $("#div-result").removeClass('d-none');   
+}
+</script>
 {% endblock %}

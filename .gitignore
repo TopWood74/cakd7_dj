@@ -134,3 +134,6 @@ dmypy.json
 migrations/
 
 _media/
+
+# Secret key
+secrets.json

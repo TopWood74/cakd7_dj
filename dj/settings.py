@@ -22,7 +22,27 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-n^ouky60sma0jmdi*o=gncur#!(#7np09v6i^1t3(n+2b8a%u)'
+# SECRET_KEY = 'django-insecure-n^ouky60sma0jmdi*o=gncur#!(#7np09v6i^1t3(n+2b8a%u)'
+# https://jisun-rea.tistory.com/entry/Django-Secret-key-%EC%83%88%EB%A1%9C-%EC%83%9D%EC%84%B1-%ED%9B%84-%EB%B6%84%EB%A6%AC%ED%95%98%EA%B8%B0
+# https://miniwebtool.com/django-secret-key-generator/
+
+import json
+from django.core.exceptions import ImproperlyConfigured
+
+secret_file = os.path.join(BASE_DIR, 'secrets.json') # secrets.json 파일 위치를 명시
+
+with open(secret_file) as f:
+    secrets = json.loads(f.read())
+
+def get_secret(setting, secrets=secrets):
+    try:
+        return secrets[setting]
+    except KeyError:
+        error_msg = "Set the {} environment variable".format(setting)
+        raise ImproperlyConfigured(error_msg)
+
+SECRET_KEY = get_secret("SECRET_KEY")
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -48,6 +68,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'rest_framework',
 
     'blog',
     'single_pages',

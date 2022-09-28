@@ -64,7 +64,6 @@
         </div>
     </div>
 </section>
-
 <script type="text/javascript">
 function submitResult() {
     let sex_female = $("#sex_female").val();
@@ -83,21 +82,23 @@ function submitResult() {
         return false;
     }
 
-    $.ajax({
-        url:'./result/',
-        type:'post',
-        data:$('form').serialize(),
-        success:function(data){
-            data = JSON.parse(data);
-            $("#result-ans").html(data.ans);
-            $("#result-lis").html(data.lis);
-            $("#div-result").removeClass('d-none');           
-            
-            $("#div-image").attr("src", "/static/ml/images/img_"+data.ans+".jpg");
-        }
-    });
+    let ajax = {}
+    ajax.type = 'post'; /* get, post */
+    ajax.url = "./result/";
+    ajax.data = $('form').serialize();
+    ajax.dataType = 'html'; /* html, jzon */
+    ajax.csrf = '{{ csrf_token }}';
+    ajax.success = function(data) { ajaxSuccess(data); };
+    ajaxReady(ajax); /* jQuery.ajax */
     return false;
 }
-</script>
 
+function ajaxSuccess(data) {
+    data = JSON.parse(data);
+    $("#result-ans").html(data.ans);
+    $("#result-lis").html(data.lis);
+    $("#div-result").removeClass('d-none');           
+    $("#div-image").attr("src", "/static/ml/images/img_"+data.ans+".jpg"); 
+}
+</script>
 {% endblock %}
